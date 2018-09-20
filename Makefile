@@ -14,8 +14,8 @@ set_version:
 	sed -i '' -e 's/current = ".*"/current = "${VERSION}"/g' Sources/DIGenKit/Version.swift
 
 generate_xcodeproj:
-	swift package generate-xcodeproj --xcconfig-overrides ${XCCONFIG_PATH}
+	SWIFT_DETERMINISTIC_HASHING=1 swift package generate-xcodeproj --xcconfig-overrides ${XCCONFIG_PATH}
 	$(MAKE) set_version VERSION=$(VERSION)
 	sed -i '' -e "s|PRODUCT_BUNDLE_IDENTIFIER = \"DIKit\"|PRODUCT_BUNDLE_IDENTIFIER = org.ishkawa.DIKit|g" DIKit.xcodeproj/project.pbxproj
-	sed -i '' -e "s|$(PWD)|..|g" DIKit.xcodeproj/project.pbxproj
-	sed -i '' -e "s|$(PWD)|../../..|g" DIKit.xcodeproj/GeneratedModuleMap/CYaml/module.modulemap
+	sed -E -i '' -e "s|$(PWD)/.build/checkouts/(.*)\.git-+[0-9]+/Package\.swift|Carthage/Checkouts/\1/Package.swift|g" DIKit.xcodeproj/project.pbxproj
+	sed -E -i '' -e "s|.build/checkouts/(.*)\.git-+[0-9]+|Carthage/Checkouts/\1|g" DIKit.xcodeproj/project.pbxproj
